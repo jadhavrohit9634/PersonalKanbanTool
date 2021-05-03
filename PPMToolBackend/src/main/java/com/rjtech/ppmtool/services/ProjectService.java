@@ -14,7 +14,7 @@ public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
 
-    public Project saveOrUpdateProject(Project project) {
+    public Project saveProject(Project project) {
         //Business Logic will come here
         try {
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
@@ -34,5 +34,27 @@ public class ProjectService {
 
     public Iterable<Project> findAllProjects() {
         return projectRepository.findAll();
+    }
+
+    public void deleteProjectByIdentifier(String projectId){
+        Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
+
+        if(project == null) {
+            throw  new ProjectIdException("Cannot delete project with ID '" + projectId.toUpperCase() + "'. This project does not exist");
+        } else {
+            projectRepository.delete(project);
+        }
+    }
+
+    public Project updateProject(Project updatedProject){
+        updatedProject.setProjectIdentifier(updatedProject.getProjectIdentifier().toUpperCase());
+
+        Project oldProject = projectRepository.findByProjectIdentifier(updatedProject.getProjectIdentifier());
+
+        if(oldProject == null){
+            throw  new ProjectIdException("Cannot update project with ID '" + updatedProject.getProjectIdentifier().toUpperCase() + "'. This project does not exist");
+        }
+        updatedProject.setId(oldProject.getId());
+        return projectRepository.save(updatedProject);
     }
 }
