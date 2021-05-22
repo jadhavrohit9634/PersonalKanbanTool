@@ -30,7 +30,7 @@ const backlogReducer = (state = initialState, action) =>{
         case DELETE_PROJECT_TASK:
             return {
                ...state,
-                // TO DO 
+               project_tasks: state.project_tasks.filter(project_task => project_task.projectSequence !== action.payload)
             }
                     
         default:
