@@ -2,9 +2,11 @@ package com.rjtech.ppmtool.services;
 
 import com.rjtech.ppmtool.domain.Backlog;
 import com.rjtech.ppmtool.domain.Project;
+import com.rjtech.ppmtool.domain.User;
 import com.rjtech.ppmtool.exceptions.ProjectIdException;
 import com.rjtech.ppmtool.repositories.BacklogRepository;
 import com.rjtech.ppmtool.repositories.ProjectRepository;
+import com.rjtech.ppmtool.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +21,17 @@ public class ProjectService {
     @Autowired
     private BacklogRepository backlogRepository;
 
-    public Project saveProject(Project project) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public Project saveProject(Project project, String username) {
         //Business Logic will come here
         try {
+
+            User user = userRepository.findByUsername(username);
+
+            project.setUser(user);
+            project.setProjectLeader(user.getUsername());
             String projectIdentifier = project.getProjectIdentifier().toUpperCase();
             project.setProjectIdentifier(projectIdentifier);
 
